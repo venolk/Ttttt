@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="theme-color" content="#070912">
+<title>Charger — Study &amp; Productivity OS</title>
+<link rel="manifest" href="manifest.json">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<!-- ============ APP SHELL ============ -->
+<div id="app" class="app hidden">
+
+  <!-- Particle/wave field behind everything on the dashboard -->
+  <canvas id="bioCanvas" class="bio-canvas" aria-hidden="true"></canvas>
+
+  <!-- ============ SIDEBAR ============ -->
+  <nav id="sidebar" class="sidebar" aria-label="Main navigation">
+    <div class="brand">
+      <span class="brand-mark">⚡</span>
+      <span class="brand-name">Charger</span>
+    </div>
+    <ul class="nav-list" id="navList">
+      <li><a href="#dashboard" data-view="dashboard" class="nav-link active"><span class="nav-ico">◈</span><span>Dashboard</span></a></li>
+      <li><a href="#tasks" data-view="tasks" class="nav-link"><span class="nav-ico">✓</span><span>Tasks</span></a></li>
+      <li><a href="#study" data-view="study" class="nav-link"><span class="nav-ico">▤</span><span>Study</span></a></li>
+      <li><a href="#pomodoro" data-view="pomodoro" class="nav-link"><span class="nav-ico">◷</span><span>Focus Timer</span></a></li>
+      <li><a href="#sounds" data-view="sounds" class="nav-link"><span class="nav-ico">∿</span><span>Ambient Sound</span></a></li>
+      <li><a href="#alarms" data-view="alarms" class="nav-link"><span class="nav-ico">◔</span><span>Alarms</span></a></li>
+      <li><a href="#goals" data-view="goals" class="nav-link"><span class="nav-ico">◎</span><span>Goals</span></a></li>
+      <li><a href="#habits" data-view="habits" class="nav-link"><span class="nav-ico">▲</span><span>Habits</span></a></li>
+      <li><a href="#timeaudit" data-view="timeaudit" class="nav-link"><span class="nav-ico">◐</span><span>Time Audit</span></a></li>
+      <li><a href="#reviews" data-view="reviews" class="nav-link"><span class="nav-ico">◫</span><span>Reviews</span></a></li>
+      <li><a href="#analytics" data-view="analytics" class="nav-link"><span class="nav-ico">◭</span><span>Analytics</span></a></li>
+      <li><a href="#calendar" data-view="calendar" class="nav-link"><span class="nav-ico">▦</span><span>Calendar</span></a></li>
+      <li><a href="#books" data-view="books" class="nav-link"><span class="nav-ico">▥</span><span>Books</span></a></li>
+      <li><a href="#life" data-view="life" class="nav-link"><span class="nav-ico">✺</span><span>Life</span></a></li>
+      <li><a href="#discipline" data-view="discipline" class="nav-link"><span class="nav-ico">◒</span><span>Digital Discipline</span></a></li>
+      <li><a href="#settings" data-view="settings" class="nav-link"><span class="nav-ico">⚙</span><span>Settings</span></a></li>
+    </ul>
+    <div class="sidebar-foot">
+      <div class="xp-mini" id="xpMini">
+        <div class="xp-mini-top"><span id="xpLevelLabel">Lv 1</span><span id="xpNumLabel">0 XP</span></div>
+        <div class="xp-bar"><div class="xp-bar-fill" id="xpBarFill"></div></div>
+      </div>
+    </div>
+  </nav>
+
+  <!-- ============ MOBILE TOPBAR ============ -->
+  <header class="topbar">
+    <button id="menuToggle" class="icon-btn" aria-label="Toggle menu">☰</button>
+    <span class="topbar-title" id="topbarTitle">Dashboard</span>
+    <button id="quickCaptureBtn" class="icon-btn" aria-label="Quick capture">✎</button>
+  </header>
+
+  <!-- ============ MAIN CONTENT ============ -->
+  <main id="main" class="main">
+
+    <!-- ---------- DASHBOARD ---------- -->
+    <section id="view-dashboard" class="view">
+      <div class="view-head">
+        <div>
+          <h1 id="greeting">Hello</h1>
+          <p class="muted" id="liveClock">--:--:--</p>
+        </div>
+        <button class="btn btn-cta" id="startFocusCta">
+          <span class="cta-ring"></span>
+          <span>Start Focus Session</span>
+        </button>
+      </div>
+
+      <div class="widget-grid" id="dashboardGrid">
+        <!-- widgets injected by JS: MIT, today summary, time audit, focus score, rhythm, revision queue, reminders -->
+      </div>
+    </section>
+
+    <!-- ---------- TASKS ---------- -->
+    <section id="view-tasks" class="view hidden">
+      <div class="view-head">
+        <h1>Tasks</h1>
+        <div class="seg" id="taskViewSeg">
+          <button class="seg-btn active" data-taskview="today">Today</button>
+          <button class="seg-btn" data-taskview="upcoming">Upcoming</button>
+          <button class="seg-btn" data-taskview="completed">Completed</button>
+          <button class="seg-btn" data-taskview="matrix">Eisenhower</button>
+          <button class="seg-btn" data-taskview="inbox">Inbox</button>
+        </div>
+      </div>
+      <form id="taskForm" class="inline-form">
+        <input type="text" id="taskTitle" placeholder="Add a task…" required maxlength="140">
+        <select id="taskPriority"><option value="low">Low</option><option value="medium" selected>Medium</option><option value="high">High</option></select>
+        <input type="date" id="taskDeadline">
+        <input type="text" id="taskCategory" placeholder="Category" maxlength="30">
+        <select id="taskDifficulty"><option value="easy">Easy</option><option value="medium" selected>Medium</option><option value="hard">Hard</option></select>
+        <label class="check-inline"><input type="checkbox" id="taskUrgent"> Urgent</label>
+        <label class="check-inline"><input type="checkbox" id="taskImportant"> Important</label>
+        <button type="submit" class="btn btn-primary">Add</button>
+      </form>
+      <div id="mitBar" class="mit-bar"></div>
+      <div id="taskListContainer"></div>
+    </section>
+
+    <!-- ---------- STUDY ---------- -->
+    <section id="view-study" class="view hidden">
+      <div class="view-head">
+        <h1>Study</h1>
+        <div class="seg" id="studyViewSeg">
+          <button class="seg-btn active" data-studyview="subjects">Subjects</button>
+          <button class="seg-btn" data-studyview="queue">Revision Queue</button>
+          <button class="seg-btn" data-studyview="notes">Notes</button>
+          <button class="seg-btn" data-studyview="flashcards">Flashcards</button>
+        </div>
+      </div>
+      <div id="studyContent"></div>
+    </section>
+
+    <!-- ---------- POMODORO ---------- -->
+    <section id="view-pomodoro" class="view hidden">
+      <div class="view-head"><h1>Focus Timer</h1></div>
+      <div class="pomodoro-wrap">
+        <div class="pomodoro-ring-wrap">
+          <svg viewBox="0 0 200 200" class="pomodoro-ring">
+            <circle cx="100" cy="100" r="90" class="ring-track"></circle>
+            <circle cx="100" cy="100" r="90" class="ring-progress" id="pomoRingProgress"></circle>
+          </svg>
+          <div class="pomodoro-time" id="pomoTimeLabel">25:00</div>
+          <div class="pomodoro-phase" id="pomoPhaseLabel">Focus</div>
+        </div>
+        <div class="pomodoro-controls">
+          <select id="pomoMode">
+            <option value="25-5">25 / 5</option>
+            <option value="50-10">50 / 10</option>
+            <option value="custom">Custom</option>
+          </select>
+          <div id="pomoCustomWrap" class="hidden">
+            <input type="number" id="pomoCustomFocus" min="1" max="180" value="25" placeholder="Focus min"> /
+            <input type="number" id="pomoCustomBreak" min="1" max="60" value="5" placeholder="Break min">
+          </div>
+          <label class="check-inline"><input type="checkbox" id="pomoAutoStart"> Auto-start next session</label>
+          <div class="btn-row">
+            <button class="btn btn-primary" id="pomoStart">Start</button>
+            <button class="btn" id="pomoPause" disabled>Pause</button>
+            <button class="btn" id="pomoReset">Reset</button>
+          </div>
+        </div>
+      </div>
+      <div class="stat-row" id="pomoStats"></div>
+      <h3>Session History</h3>
+      <div id="pomoHistory"></div>
+    </section>
+
+    <!-- ---------- SOUNDS ---------- -->
+    <section id="view-sounds" class="view hidden">
+      <div class="view-head"><h1>Ambient Sound</h1><p class="muted">Generated locally, entirely offline — no audio files.</p></div>
+      <div class="sound-grid" id="soundGrid"></div>
+      <div class="sound-master">
+        <label>Volume</label>
+        <input type="range" id="soundVolume" min="0" max="100" value="50">
+        <label class="check-inline"><input type="checkbox" id="soundLoop" checked> Loop</label>
+        <label>Sleep timer (min, 0 = off)</label>
+        <input type="number" id="soundSleepTimer" min="0" max="180" value="0">
+      </div>
+    </section>
+
+    <!-- ---------- ALARMS ---------- -->
+    <section id="view-alarms" class="view hidden">
+      <div class="view-head"><h1>Alarms &amp; Reminders</h1></div>
+      <div class="callout">Charger can only sound an alarm while this tab is open (or the app is installed and kept running). It cannot wake your device from fully closed. For anything critical — like waking up — please also set a backup alarm on your phone.</div>
+      <button class="btn btn-primary" id="addAlarmBtn">+ New Alarm</button>
+      <div id="alarmList"></div>
+      <h3>Reminders</h3>
+      <button class="btn btn-primary" id="addReminderBtn">+ New Reminder</button>
+      <div id="reminderList"></div>
+    </section>
+
+    <!-- ---------- GOALS ---------- -->
+    <section id="view-goals" class="view hidden">
+      <div class="view-head"><h1>Goals</h1></div>
+      <form id="goalForm" class="inline-form">
+        <input type="text" id="goalTitle" placeholder="Goal title…" required maxlength="140">
+        <select id="goalTerm"><option value="daily">Daily</option><option value="weekly">Weekly</option><option value="monthly">Monthly</option><option value="longterm">Long-term</option></select>
+        <button type="submit" class="btn btn-primary">Add Goal</button>
+      </form>
+      <div id="goalList"></div>
+    </section>
+
+    <!-- ---------- HABITS ---------- -->
+    <section id="view-habits" class="view hidden">
+      <div class="view-head"><h1>Habits</h1></div>
+      <form id="habitForm" class="inline-form">
+        <input type="text" id="habitTitle" placeholder="Habit (e.g. Read 20 min)…" required maxlength="140">
+        <input type="text" id="habitStackAfter" placeholder="Stack after (optional)">
+        <input type="text" id="habitTrigger" placeholder="If-then note (optional)">
+        <button type="submit" class="btn btn-primary">Add Habit</button>
+      </form>
+      <div id="habitList"></div>
+    </section>
+
+    <!-- ---------- TIME AUDIT ---------- -->
+    <section id="view-timeaudit" class="view hidden">
+      <div class="view-head"><h1>Time Audit</h1></div>
+      <div class="log-quick" id="logQuick"></div>
+      <div id="timeAuditContent"></div>
+    </section>
+
+    <!-- ---------- REVIEWS ---------- -->
+    <section id="view-reviews" class="view hidden">
+      <div class="view-head"><h1>Daily &amp; Weekly Review</h1></div>
+      <div class="btn-row">
+        <button class="btn btn-primary" id="startEveningReview">Evening Review</button>
+        <button class="btn btn-primary" id="startWeeklyReview">Weekly Review</button>
+      </div>
+      <div id="reviewHistory"></div>
+    </section>
+
+    <!-- ---------- ANALYTICS ---------- -->
+    <section id="view-analytics" class="view hidden">
+      <div class="view-head"><h1>Analytics</h1></div>
+      <div id="analyticsContent"></div>
+    </section>
+
+    <!-- ---------- CALENDAR ---------- -->
+    <section id="view-calendar" class="view hidden">
+      <div class="view-head">
+        <h1>Calendar</h1>
+        <div class="btn-row">
+          <button class="btn" id="calPrev">‹</button>
+          <span id="calLabel" class="muted"></span>
+          <button class="btn" id="calNext">›</button>
+        </div>
+      </div>
+      <form id="eventForm" class="inline-form">
+        <input type="text" id="eventTitle" placeholder="Event title…" required maxlength="140">
+        <input type="date" id="eventDate" required>
+        <select id="eventType"><option value="event">Event</option><option value="deadline">Deadline</option><option value="revision">Revision</option><option value="exam">Exam</option></select>
+        <button type="submit" class="btn btn-primary">Add</button>
+      </form>
+      <div id="calGrid" class="cal-grid"></div>
+      <div id="calDayList"></div>
+    </section>
+
+    <!-- ---------- BOOKS ---------- -->
+    <section id="view-books" class="view hidden">
+      <div class="view-head"><h1>Book Tracker</h1></div>
+      <form id="bookForm" class="inline-form">
+        <input type="text" id="bookTitle" placeholder="Book title…" required maxlength="140">
+        <input type="text" id="bookAuthor" placeholder="Author">
+        <input type="number" id="bookTotalPages" placeholder="Total pages" min="1">
+        <button type="submit" class="btn btn-primary">Add Book</button>
+      </form>
+      <div id="bookList"></div>
+    </section>
+
+    <!-- ---------- LIFE ---------- -->
+    <section id="view-life" class="view hidden">
+      <div class="view-head">
+        <h1>Life</h1>
+        <div class="seg" id="lifeViewSeg">
+          <button class="seg-btn active" data-lifeview="routines">Routines</button>
+          <button class="seg-btn" data-lifeview="health">Health</button>
+          <button class="seg-btn" data-lifeview="energy">Energy</button>
+          <button class="seg-btn" data-lifeview="journal">Journal</button>
+        </div>
+      </div>
+      <div id="lifeContent"></div>
+    </section>
+
+    <!-- ---------- DIGITAL DISCIPLINE ---------- -->
+    <section id="view-discipline" class="view hidden">
+      <div class="view-head"><h1>Digital Discipline</h1></div>
+      <div class="callout">This is a self-awareness tool. A webpage cannot block other tabs, apps or websites — Focus Mode simply hides distractions here and tracks what you tell it.</div>
+      <button class="btn btn-primary" id="focusModeBtn">Enter Focus Mode</button>
+      <h3>Distraction Log</h3>
+      <form id="distractionForm" class="inline-form">
+        <input type="text" id="distractionText" placeholder="What pulled your attention?" required maxlength="140">
+        <button type="submit" class="btn btn-primary">Log</button>
+      </form>
+      <div id="distractionList"></div>
+    </section>
+
+    <!-- ---------- SETTINGS ---------- -->
+    <section id="view-settings" class="view hidden">
+      <div class="view-head"><h1>Settings</h1></div>
+      <div id="settingsContent"></div>
+    </section>
+
+  </main>
+</div>
+
+<!-- ============ ONBOARDING ============ -->
+<div id="onboarding" class="overlay hidden">
+  <div class="onboard-card" id="onboardCard"></div>
+</div>
+
+<!-- ============ GENERIC MODAL ============ -->
+<div id="modalOverlay" class="overlay hidden">
+  <div class="modal-card" id="modalCard"></div>
+</div>
+
+<!-- ============ COMMAND PALETTE ============ -->
+<div id="paletteOverlay" class="overlay hidden">
+  <div class="palette-card">
+    <input type="text" id="paletteInput" placeholder="Type a command, or jot a task/note…" autocomplete="off">
+    <div id="paletteResults" class="palette-results"></div>
+  </div>
+</div>
+
+<!-- ============ TOASTS ============ -->
+<div id="toastStack" class="toast-stack" aria-live="polite"></div>
+
+<!-- ============ BACKUP REMINDER BANNER ============ -->
+<div id="backupBanner" class="backup-banner hidden">
+  <span>💾 It's been a while — export a backup? This app only stores data on this device.</span>
+  <button class="btn btn-sm" id="backupBannerExport">Export now</button>
+  <button class="icon-btn" id="backupBannerDismiss">✕</button>
+</div>
+
+<script src="app.js"></script>
+</body>
+</html>
